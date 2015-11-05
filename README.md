@@ -28,20 +28,20 @@ $container = $app->getContainer();
 $container->register(new \Projek\Slim\MonologProvider);
 
 // Option 2, using Closure
-$container['view'] = function ($c) {
-    $view = new \Projek\Slim\Monolog([
+$container['logger'] = function ($c) {
+    $logger = new \Projek\Slim\Monolog([
         'directory' => 'path/to/logs',
     ]);
 
-    return $view;
+    return $logger;
 };
 
 // Define named route
-$app->get('/hello/{name}', function ($req, $res, $args) {
-    return $this->view->render($res, 'profile', [
-        'name' => $args['name']
-    ]);
-})->setName('profile');
+$app->get('/', function ($req, $res, $args) {
+    $this->logger->info('Assess home page');
+
+    return $res;
+});
 
 // Run app
 $app->run();
