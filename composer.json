@@ -29,8 +29,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=5.5.0",,
-        "monolog/monolog": "^1.17"
+        "php": ">=5.5.0",
+        "monolog/monolog": "~1.17",
         "slim/slim": "3.x-dev"
     },
     "require-dev": {
