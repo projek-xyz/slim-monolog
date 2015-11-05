@@ -14,10 +14,10 @@ class MonologProvider implements ServiceProviderInterface
      */
     public function register(Container $container)
     {
-        if (!$container['settings']->has('logger')) {
+        if (!isset($container->get('settings')['logger'])) {
             throw new InvalidArgumentException('Logger configuration not found');
         }
 
-        $container['logger'] = new Monolog('slim-app', $container['settings']->get('logger'));
+        $container['logger'] = new Monolog('slim-app', $container->get('settings')['logger']);
     }
 }
