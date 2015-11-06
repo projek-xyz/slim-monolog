@@ -20,7 +20,9 @@ class Monolog
      */
     private $settings = [
         'directory' => null,
+        'filename' => null,
         'timezone' => null,
+        'level' => 'DEBUG',
         'handlers' => [],
     ];
 
@@ -41,14 +43,29 @@ class Monolog
         $this->settings += $settings;
         $this->monolog = new Logger($this->name);
 
-        $this->monolog->setHandlers($this->settings['handlers']);
-
         if (null !== $this->settings['timezone']) {
             if (is_string($this->settings['timezone'])) {
                 $this->settings['timezone'] = new \DateTimeZone($this->settings['timezone']);
             }
 
             Logger::setTimezone($this->settings['timezone']);
+        }
+
+        $this->monolog->setHandlers($this->settings['handlers']);
+
+        $levels = array_keys(Logger::getLevels());
+        $level = strtoupper($this->settings['level']);
+        if (!in_array($level, $levels)) {
+            $level = 'debug';
+        }
+
+        if ($path = $this->settings['directory']) {
+            if ($path === 'syslog') {
+                $this->useSyslog($this->name, $level);
+            } elseif (is_dir($path)) {
+                $path .= '/'.$this->settings['filename'];
+                $this->useFiles($path, $level);
+            }
         }
     }
 

@@ -29,33 +29,33 @@ $container->register(new \Projek\Slim\MonologProvider);
 
 // Option 2, using Closure
 $container['logger'] = function ($c) {
-    $logger = new \Projek\Slim\Monolog([
-        'directory' => 'path/to/logs',
-    ]);
+    $settings = [
+        'directory' => 'path/to/logs',  // Path to log directory
+        'filename' => 'my-app.log',     // Log file name
+        'timezone' => 'Asia/Jakarta',   // Your timezone
+        'level' => 'DEBUG',             // Log level
+        'handlers' => [],               // List of Monolog Handler you wanna use
+    ];
 
-    return $logger;
+    return new \Projek\Slim\Monolog($settings);
 };
 
-// Define named route
-$app->get('/', function ($req, $res, $args) {
-    $this->logger->info('Assess home page');
+// Define a log middleware
+$app->add(function ($req, $res, $next) {
+    $return = $next($req, $res);
 
-    return $res;
+    $this->logger->info('Something happen');
+
+    return $return;
 });
 
 // Run app
 $app->run();
 ```
 
-**NOTE**: if you are using _option 1_ please make sure you already have `$container['settings']['monolog']` in your configuration file.
-
-## Custom template functions
-
-...
-
-```php
-//
-```
+**NOTE**:
+- if you are using _option 1_ please make sure you already have `$container['settings']['logger']` in your configuration file.
+- `$settings['filename']` only required if you have `$settings['directory']`
 
 ## Testing
 
