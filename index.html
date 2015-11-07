@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Monolog Integration for Slim Framework 3 by projek-xyz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Monolog Integration for Slim Framework 3</h1>
+      <h2 class="project-tagline">Slim Framework 3.x component helper built on top of the Monolog Logger</h2>
+      <a href="https://github.com/projek-xyz/slim-monolog" class="btn">View on GitHub</a>
+      <a href="https://github.com/projek-xyz/slim-monolog/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/projek-xyz/slim-monolog/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <p><a href="https://travis-ci.org/projek-xyz/slim-monolog"><img src="https://img.shields.io/travis/projek-xyz/slim-monolog/master.svg?style=flat-square" alt="Build Status"></a>
+<a href="https://packagist.org/packages/projek-xyz/slim-monolog"><img src="https://img.shields.io/packagist/l/projek-xyz/slim-monolog.svg?style=flat-square" alt="LICENSE"></a>
+<a href="https://packagist.org/packages/projek-xyz/slim-monolog"><img src="https://img.shields.io/packagist/v/projek-xyz/slim-monolog.svg?style=flat-square" alt="VERSION"></a>
+<a href="https://coveralls.io/github/projek-xyz/slim-monolog"><img src="https://img.shields.io/coveralls/projek-xyz/slim-monolog/master.svg?style=flat-square" alt="Coveralls"></a>
+<a href="https://insight.sensiolabs.com/projects/26316c51-2637-473f-81bb-17af361f4b65"><img src="https://img.shields.io/sensiolabs/i/26316c51-2637-473f-81bb-17af361f4b65.svg?style=flat-square" alt="SensioLabs Insight"></a></p>
+
+<p>This is a Slim Framework 3.x component helper built on top of the Monolog Logger.</p>
+
+<h2>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install</h2>
+
+<p>Via <a href="https://getcomposer.org/">Composer</a></p>
+
+<div class="highlight highlight-source-shell"><pre>$ composer require projek-xyz/slim-monolog --prefer-dist</pre></div>
+
+<p>Requires Slim Framework 3 and PHP 5.5.0 or newer.</p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c">// Create Slim app</span></span>
+<span class="pl-s1"><span class="pl-smi">$app</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">\Slim\</span><span class="pl-c1">App</span>();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// Fetch DI Container</span></span>
+<span class="pl-s1"><span class="pl-smi">$container</span> <span class="pl-k">=</span> <span class="pl-smi">$app</span><span class="pl-k">-&gt;</span>getContainer();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// Register Monolog helper:</span></span>
+<span class="pl-s1"><span class="pl-c">// Option 1, using MonologProvider</span></span>
+<span class="pl-s1"><span class="pl-smi">$container</span><span class="pl-k">-&gt;</span>register(<span class="pl-k">new</span> <span class="pl-c1">\Projek\Slim\</span><span class="pl-c1">MonologProvider</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// Option 2, using Closure</span></span>
+<span class="pl-s1"><span class="pl-smi">$container</span>[<span class="pl-s"><span class="pl-pds">'</span>logger<span class="pl-pds">'</span></span>] <span class="pl-k">=</span> <span class="pl-k">function</span> (<span class="pl-smi">$c</span>) {</span>
+<span class="pl-s1">    <span class="pl-smi">$settings</span> <span class="pl-k">=</span> [</span>
+<span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>directory<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>path/to/logs<span class="pl-pds">'</span></span>,  <span class="pl-c">// Path to log directory</span></span>
+<span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>filename<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>my-app.log<span class="pl-pds">'</span></span>,     <span class="pl-c">// Log file name</span></span>
+<span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>timezone<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>Asia/Jakarta<span class="pl-pds">'</span></span>,   <span class="pl-c">// Your timezone</span></span>
+<span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>level<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>DEBUG<span class="pl-pds">'</span></span>,             <span class="pl-c">// Log level</span></span>
+<span class="pl-s1">        <span class="pl-s"><span class="pl-pds">'</span>handlers<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> [],               <span class="pl-c">// List of Monolog Handler you wanna use</span></span>
+<span class="pl-s1">    ];</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">return</span> <span class="pl-k">new</span> <span class="pl-c1">\Projek\Slim\</span><span class="pl-c1">Monolog</span>(<span class="pl-smi">$settings</span>);</span>
+<span class="pl-s1">};</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// Define a log middleware</span></span>
+<span class="pl-s1"><span class="pl-smi">$app</span><span class="pl-k">-&gt;</span>add(<span class="pl-k">function</span> (<span class="pl-smi">$req</span>, <span class="pl-smi">$res</span>, <span class="pl-smi">$next</span>) {</span>
+<span class="pl-s1">    <span class="pl-smi">$return</span> <span class="pl-k">=</span> $<span class="pl-smi">next</span>(<span class="pl-smi">$req</span>, <span class="pl-smi">$res</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c">// or you can use $this-&gt;get('logger')-&gt;info('...');</span></span>
+<span class="pl-s1">    <span class="pl-smi">$this</span>[<span class="pl-s"><span class="pl-pds">'</span>logger<span class="pl-pds">'</span></span>]<span class="pl-k">-&gt;</span>info(<span class="pl-s"><span class="pl-pds">'</span>Something happen<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">return</span> <span class="pl-smi">$return</span>;</span>
+<span class="pl-s1">});</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// Run app</span></span>
+<span class="pl-s1"><span class="pl-smi">$app</span><span class="pl-k">-&gt;</span>run();</span></pre></div>
+
+<p><strong>NOTE</strong>:</p>
+
+<ul>
+<li>if you are using <em>option 1</em> please make sure you already have <code>$container['settings']['logger']</code> in your configuration file.</li>
+<li>
+<code>$settings['filename']</code> only required if you have <code>$settings['directory']</code>
+</li>
+</ul>
+
+<h2>
+<a id="testing" class="anchor" href="#testing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Testing</h2>
+
+<div class="highlight highlight-source-shell"><pre>phpunit</pre></div>
+
+<h2>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributing</h2>
+
+<p>Please see <a href="https://github.com/projek-xyz/slim-monolog/blob/master/CONTRIBUTING.md">CONTRIBUTING</a> for details.</p>
+
+<h2>
+<a id="credits" class="anchor" href="#credits" aria-hidden="true"><span class="octicon octicon-link"></span></a>Credits</h2>
+
+<ul>
+<li><a href="http://feryardiant.me">Fery Wardiyanto</a></li>
+<li><a href="http://www.slimframework.com">Slim Framework</a></li>
+<li><a href="https://github.com/Seldaek/monolog">Monolog</a></li>
+</ul>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>The MIT License (MIT). Please see <a href="https://github.com/projek-xyz/slim-monolog/blob/master/LICENSE.md">License File</a> for more information.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/projek-xyz/slim-monolog">Monolog Integration for Slim Framework 3</a> is maintained by <a href="https://github.com/projek-xyz">projek-xyz</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-66920413-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
