@@ -1,6 +1,6 @@
 {
     "name": "projek-xyz/slim-monolog",
-    "description": "Slim Framework 3 view helper built on top of the Monolog logger component",
+    "description": "Slim Framework 3 log helper built on top of the Monolog logger component",
     "keywords": ["slim","framework","logger","monolog"],
     "homepage": "http://www.projek.xyz/slim-monolog",
     "type": "library",
