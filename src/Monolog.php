@@ -22,7 +22,7 @@ class Monolog
         'directory' => null,
         'filename' => null,
         'timezone' => null,
-        'level' => 'DEBUG',
+        'level' => 'debug',
         'handlers' => [],
     ];
 
@@ -54,17 +54,16 @@ class Monolog
         $this->monolog->setHandlers($this->settings['handlers']);
 
         $levels = array_keys(Logger::getLevels());
-        $level = strtoupper($this->settings['level']);
-        if (!in_array($level, $levels)) {
-            $level = 'debug';
+        if (!in_array(strtoupper($this->settings['level']), $levels)) {
+            $this->settings['level'] = 'debug';
         }
 
         if ($path = $this->settings['directory']) {
             if ($path === 'syslog') {
-                $this->useSyslog($this->name, $level);
+                $this->useSyslog($this->name, $this->settings['level']);
             } elseif (is_dir($path)) {
                 $path .= '/'.$this->settings['filename'];
-                $this->useFiles($path, $level);
+                $this->useFiles($path, $this->settings['level']);
             }
         }
     }
@@ -145,6 +144,7 @@ class Monolog
     {
         $name or $name = $this->name;
         $this->monolog->pushHandler(new SyslogHandler($name, LOG_USER, $level));
+
         return $this;
     }
 
@@ -160,6 +160,7 @@ class Monolog
         $handler = new ErrorLogHandler($messageType, Logger::toMonologLevel($level));
         $this->monolog->pushHandler($handler);
         $handler->setFormatter($this->getDefaultFormatter());
+
         return $this;
     }
 
