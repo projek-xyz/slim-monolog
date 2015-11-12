@@ -1,7 +1,7 @@
 # [Unofficial] Slim Framework 3.x Monolog Logger
 
 [![LICENSE](https://img.shields.io/packagist/l/projek-xyz/slim-monolog.svg?style=flat-square)](LICENSE.md)
-[![VERSION](https://img.shields.io/github/release/projek-xyz/slim-monolog.svg?style=flat-square)](https://github.com/projek-xyz/slim-monolog/releases)
+[![VERSION](https://img.shields.io/packagist/v/projek-xyz/slim-monolog.svg?style=flat-square)](https://github.com/projek-xyz/slim-monolog/releases)
 [![Build Status](https://img.shields.io/travis/projek-xyz/slim-monolog/master.svg?branch=master&style=flat-square)](https://travis-ci.org/projek-xyz/slim-monolog)
 [![Coveralls](https://img.shields.io/coveralls/projek-xyz/slim-monolog/master.svg?style=flat-square)](https://coveralls.io/github/projek-xyz/slim-monolog)
 [![Code Quality](https://img.shields.io/sensiolabs/i/26316c51-2637-473f-81bb-17af361f4b65.svg?style=flat-square)](https://insight.sensiolabs.com/projects/26316c51-2637-473f-81bb-17af361f4b65)
