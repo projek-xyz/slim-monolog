@@ -40,8 +40,8 @@ class Monolog
     public function __construct($name = 'slim-app', $settings = [])
     {
         $this->name = $name;
-        $this->settings += $settings;
         $this->monolog = new Logger($this->name);
+        $this->settings = array_merge($this->settings, $settings);
 
         if (null !== $this->settings['timezone']) {
             if (is_string($this->settings['timezone'])) {
