@@ -59,6 +59,22 @@ class MonologTest extends TestCase
         $this->assertCount(0, $monolog->getProcessors());
     }
 
+    public function testShouldConfiguredWithTimezoneString()
+    {
+        extract($this->settings);
+        $settings['timezone'] = 'Asia/Jakarta';
+        $monolog = $this->getMockBuilder(Monolog::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $mock = new ReflectionClass(Monolog::class);
+        $mock->getConstructor()->invokeArgs($monolog, [$basename, $settings]);
+        $setting = $mock->getProperty('settings');
+        $setting->setAccessible(true);
+
+        $this->assertInstanceOf(\DateTimeZone::class, $setting->getValue($monolog)['timezone']);
+    }
+
     public function testShouldUseSyslogBySettings()
     {
         $settings = ['directory' => 'syslog'];
