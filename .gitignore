@@ -1,4 +1,5 @@
 .directory
+.php-version
 composer.lock
 vendor
 clover.xml

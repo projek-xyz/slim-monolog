@@ -3,12 +3,16 @@ namespace Projek\Slim\Tests;
 
 use Monolog\Logger;
 use Monolog\Handler;
+use Monolog\Formatter\LineFormatter;
+use ReflectionClass;
+use ReflectionMethod;
+use Projek\Slim\Monolog;
 
 class MonologTest extends TestCase
 {
     public function testShoudReturnsMonologLogger()
     {
-        $this->assertInstanceOf('Monolog\Logger', $this->logger->getMonolog());
+        $this->assertInstanceOf(Logger::class, $this->logger->getMonolog());
     }
 
     public function testShoudHasDefaultHandlers()
@@ -58,40 +62,95 @@ class MonologTest extends TestCase
     public function testShouldUseSyslogBySettings()
     {
         $settings = ['directory' => 'syslog'];
-        $logger = $this->getMockBuilder('Projek\Slim\Monolog')
+        $monolog = $this->getMockBuilder(Monolog::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $monolog = $this->getMockBuilder('Monolog\Logger')
+        $logger = $this->getMockBuilder(Logger::class)
             ->setConstructorArgs([$this->settings['basename']])
             ->getMock();
 
-        $logger->expects($this->once())
+        $monolog->expects($this->once())
             ->method('useSyslog')
-            ->willReturn($monolog);
+            ->willReturn($logger);
 
-        $mock = new \ReflectionClass('Projek\Slim\Monolog');
+        $mock = new ReflectionClass(Monolog::class);
         $cons = $mock->getConstructor();
-        $cons->invokeArgs($logger, [$this->settings['basename'], $settings]);
+        $cons->invokeArgs($monolog, [$this->settings['basename'], $settings]);
     }
 
     public function testShouldUseRollingFileWhenDirExists()
     {
         $settings = ['directory' => __DIR__.'/logs'];
-        $logger = $this->getMockBuilder('Projek\Slim\Monolog')
+        $monolog = $this->getMockBuilder(Monolog::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $monolog = $this->getMockBuilder('Monolog\Logger')
+        $logger = $this->getMockBuilder(Logger::class)
             ->setConstructorArgs([$this->settings['basename']])
             ->getMock();
 
-        $logger->expects($this->once())
+        $monolog->expects($this->once())
             ->method('useRotatingFiles')
-            ->willReturn($monolog);
+            ->willReturn($logger);
 
-        $mock = new \ReflectionClass('Projek\Slim\Monolog');
+        $mock = new ReflectionClass(Monolog::class);
         $cons = $mock->getConstructor();
-        $cons->invokeArgs($logger, [$this->settings['basename'], $settings]);
+        $cons->invokeArgs($monolog, [$this->settings['basename'], $settings]);
+    }
+
+    public function testShouldUseSyslogWhenNeeded()
+    {
+        extract($this->settings);
+        $logger = new Monolog($basename, $logger);
+        $logger->useFiles();
+        $handler = array_shift($logger->getMonolog()->getHandlers());
+
+        $this->assertInstanceOf(Handler\StreamHandler::class, $handler);
+    }
+
+    public function testShouldUseFilesWhenNeeded()
+    {
+        extract($this->settings);
+        $logger = new Monolog($basename, $logger);
+        $logger->useSyslog();
+        $handler = array_shift($logger->getMonolog()->getHandlers());
+
+        $this->assertInstanceOf(Handler\SyslogHandler::class, $handler);
+    }
+
+    public function testShouldUseErrorlogWhenNeeded()
+    {
+        extract($this->settings);
+        $logger = new Monolog($basename, $logger);
+        $logger->useErrorLog();
+        $handler = array_shift($logger->getMonolog()->getHandlers());
+
+        $this->assertInstanceOf(Handler\ErrorLogHandler::class, $handler);
+    }
+
+    public function testShouldWriteLog()
+    {
+        extract($this->settings);
+        $handle = fopen('php://memory', 'a+');
+        $logger = new Monolog($basename, $logger);
+        $logger->pushHandler(new Handler\StreamHandler($handle));
+        $logger->debug('test');
+        fseek($handle, 0);
+        $out = explode('.', fread($handle, 100));
+
+        $this->assertEquals('DEBUG: test [] []'.PHP_EOL, $out[1]);
+
+        if (file_exists($file = 'debug-'.date('Y-m-d'))) {
+            unlink($file);
+        }
+    }
+
+    public function testFormaterInstance()
+    {
+        $mock = new ReflectionMethod($this->logger, 'getDefaultFormatter');
+        $mock->setAccessible(true);
+
+        $this->assertInstanceOf(LineFormatter::class, $mock->invoke($this->logger));
     }
 }
