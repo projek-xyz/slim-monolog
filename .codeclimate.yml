@@ -1,3 +1,5 @@
+languages:
+  PHP: true
 engines:
   fixme:
     enabled: true
@@ -5,8 +7,6 @@ engines:
     enabled: true
   phpmd:
     enabled: true
-ratings:
-  paths:
-  - "src/**.php"
 exclude_paths:
 - tests/**/*
+- vendor/**/*
