@@ -3,10 +3,7 @@ namespace Projek\Slim;
 
 use Monolog\Logger;
 use Monolog\Formatter\LineFormatter;
-use Monolog\Handler\SyslogHandler;
-use Monolog\Handler\StreamHandler;
-use Monolog\Handler\ErrorLogHandler;
-use Monolog\Handler\HandlerInterface;
+use Monolog\Handler;
 use Psr\Log\LoggerTrait;
 
 class Monolog
@@ -62,8 +59,8 @@ class Monolog
             if ($path === 'syslog') {
                 $this->useSyslog($this->name, $this->settings['level']);
             } elseif (is_dir($path)) {
-                $path .= '/'.$this->settings['filename'];
-                $this->useFiles($path, $this->settings['level']);
+                $path .= '/'.$this->name;
+                $this->useRotatingFiles($path, $this->settings['level']);
             }
         }
     }
@@ -81,10 +78,10 @@ class Monolog
     /**
      * Pushes a handler on to the stack.
      *
-     * @param  HandlerInterface $handler
+     * @param  \Monolog\Handler\HandlerInterface $handler
      * @return \Monolog\Logger
      */
-    public function pushHandler(HandlerInterface $handler)
+    public function pushHandler(Handler\HandlerInterface $handler)
     {
         return $this->monolog->pushHandler($handler);
     }
@@ -92,7 +89,7 @@ class Monolog
     /**
      * Pops a handler from the stack
      *
-     * @return Monolog\Handler\HandlerInterface
+     * @return \Monolog\Handler\HandlerInterface
      */
     public function popHandler()
     {
@@ -126,7 +123,7 @@ class Monolog
      * @param  integer $level   The logging level
      * @param  string  $message The log message
      * @param  array   $context The log context
-     * @return Boolean Whether the record has been processed
+     * @return bool    Whether the record has been processed
      */
     public function log($level, $message, array $context = [])
     {
@@ -143,7 +140,7 @@ class Monolog
     public function useSyslog($name = 'slim-app', $level = 'debug')
     {
         $name or $name = $this->name;
-        $this->monolog->pushHandler(new SyslogHandler($name, LOG_USER, $level));
+        $this->monolog->pushHandler(new Handler\SyslogHandler($name, LOG_USER, $level));
 
         return $this;
     }
@@ -155,9 +152,9 @@ class Monolog
      * @param  int    $messageType
      * @return void
      */
-    public function useErrorLog($level = 'debug', $messageType = ErrorLogHandler::OPERATING_SYSTEM)
+    public function useErrorLog($level = 'debug', $messageType = Handler\ErrorLogHandler::OPERATING_SYSTEM)
     {
-        $handler = new ErrorLogHandler($messageType, Logger::toMonologLevel($level));
+        $handler = new Handler\ErrorLogHandler($messageType, Logger::toMonologLevel($level));
         $this->monolog->pushHandler($handler);
         $handler->setFormatter($this->getDefaultFormatter());
 
@@ -174,8 +171,26 @@ class Monolog
     public function useFiles($path = '', $level = 'debug')
     {
         $path or $path = $this->settings['directory'];
-        $handler = new StreamHandler($path, Logger::toMonologLevel($level));
+        $handler = new Handler\StreamHandler($path, Logger::toMonologLevel($level));
         $this->monolog->pushHandler($handler);
+        $handler->setFormatter($this->getDefaultFormatter());
+
+        return $this;
+    }
+
+    /**
+     * Register a rotating file log handler.
+     *
+     * @param  string  $level
+     * @param  string  $path
+     * @return void
+     */
+    public function useRotatingFiles($level = 'debug', $path = null)
+    {
+        $path || $path = $this->settings['directory'];
+        $this->monolog->pushHandler(
+            $handler = new Handler\RotatingFileHandler($path, 5, Logger::toMonologLevel($level))
+        );
         $handler->setFormatter($this->getDefaultFormatter());
 
         return $this;
