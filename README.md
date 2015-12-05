@@ -65,7 +65,7 @@ $app->run();
 ## Testing
 
 ```bash
-phpunit
+$ phpunit
 ```
 
 ## Contributing

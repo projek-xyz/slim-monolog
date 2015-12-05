@@ -1,5 +1,7 @@
 language: php
 
+sudo: false
+
 php:
     - 5.5
     - 5.6
@@ -11,8 +13,8 @@ install:
     - if [[ "$TRAVIS_PHP_VERSION" != '5.6' ]]; then composer install -n ; fi
 
 script:
-    - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then php vendor/bin/phpunit --coverage-clover clover.xml ; fi
     - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then php vendor/bin/phpcs --standard=PSR2 -n -p src/ ; fi
+    - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then php vendor/bin/phpunit --coverage-clover clover.xml ; fi
     - if [[ "$TRAVIS_PHP_VERSION" != '5.6' ]]; then php vendor/bin/phpunit --coverage-text ; fi
 
 after_script:
