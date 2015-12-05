@@ -20,7 +20,7 @@ abstract class TestCase extends PHPUnit_Framework_TestCase
     protected $settings = [
         'basename' => 'slim-monolog-app',
         'logger' => [
-            'directory' => __DIR__.'/logs',
+            'directory' => '',
             'filename' => 'app',
             'level' => '',
             'handlers' => [],
@@ -29,6 +29,7 @@ abstract class TestCase extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $this->settings['logger']['directory'] = __DIR__.'/logs';
         $this->logger = new Monolog($this->settings['basename'], $this->settings['logger']);
     }
 }
