@@ -104,9 +104,9 @@ class MonologTest extends TestCase
         extract($this->settings);
         $logger = new Monolog($basename, $logger);
         $logger->useFiles();
-        $handler = array_shift($logger->getMonolog()->getHandlers());
+        $handler = $logger->getMonolog()->getHandlers();
 
-        $this->assertInstanceOf(Handler\StreamHandler::class, $handler);
+        $this->assertInstanceOf(Handler\StreamHandler::class, array_shift($handler));
     }
 
     public function testShouldUseFilesWhenNeeded()
@@ -114,9 +114,9 @@ class MonologTest extends TestCase
         extract($this->settings);
         $logger = new Monolog($basename, $logger);
         $logger->useSyslog();
-        $handler = array_shift($logger->getMonolog()->getHandlers());
+        $handler = $logger->getMonolog()->getHandlers();
 
-        $this->assertInstanceOf(Handler\SyslogHandler::class, $handler);
+        $this->assertInstanceOf(Handler\SyslogHandler::class, array_shift($handler));
     }
 
     public function testShouldUseErrorlogWhenNeeded()
@@ -124,9 +124,9 @@ class MonologTest extends TestCase
         extract($this->settings);
         $logger = new Monolog($basename, $logger);
         $logger->useErrorLog();
-        $handler = array_shift($logger->getMonolog()->getHandlers());
+        $handler = $logger->getMonolog()->getHandlers();
 
-        $this->assertInstanceOf(Handler\ErrorLogHandler::class, $handler);
+        $this->assertInstanceOf(Handler\ErrorLogHandler::class, array_shift($handler));
     }
 
     public function testShouldWriteLog()
