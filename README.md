@@ -1,4 +1,4 @@
-# [Unofficial] Slim Framework 3.x Monolog Logger
+# Slim Framework 3.x Monolog Logger
 
 [![LICENSE](https://img.shields.io/packagist/l/projek-xyz/slim-monolog.svg?style=flat-square)](LICENSE.md)
 [![VERSION](https://img.shields.io/packagist/v/projek-xyz/slim-monolog.svg?style=flat-square)](https://github.com/projek-xyz/slim-monolog/releases)
