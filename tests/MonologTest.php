@@ -100,12 +100,6 @@ class MonologTest extends TestCase
             $this->settings['basename'],
             $this->settings['logger']
         ]);
-
-        $mock->getMethod('useSyslog')->invoke($monolog);
-        $log = $mock->getMethod('getMonolog')->invoke($monolog);
-        $handler = $log->getHandlers();
-
-        $this->assertInstanceOf(Handler\SyslogHandler::class, array_shift($handler));
     }
 
     public function testConstructorUsingRotatingFilesHandler()
@@ -131,6 +125,22 @@ class MonologTest extends TestCase
             $this->settings['basename'],
             $this->settings['logger']
         ]);
+    }
+
+    public function testUsingSyslogHandler()
+    {
+        $this->settings['logger']['directory'] = 'syslog';
+
+        // Create new Projek\Slim\Monolog::__construct() instance
+        $mock = (new ReflectionClass(Monolog::class))->newInstanceArgs([
+            $this->settings['basename'],
+            $this->settings['logger']
+        ]);
+
+        // Expect instance of registered handler
+        $handler = $mock->getMonolog()->getHandlers();
+        $this->assertCount(1, $handler);
+        $this->assertInstanceOf(Handler\SyslogHandler::class, array_shift($handler));
     }
 
     public function testUsingRotatingFilesHandler()
