@@ -125,33 +125,30 @@ class MonologTest extends TestCase
             ->method('useRotatingFiles')
             ->willReturn($logger);
 
+        // Invoke Projek\Slim\Monolog::__construct()
         $mock = new ReflectionClass(Monolog::class);
-        $consArgs = [
+        $mock->getConstructor()->invokeArgs($monolog, [
             $this->settings['basename'],
             $this->settings['logger']
-        ];
+        ]);
+    }
 
-        // Invoke Projek\Slim\Monolog::__construct()
-        $mock->getConstructor()->invokeArgs($monolog, $consArgs);
-
+    public function testUsingRotatingFilesHandler()
+    {
         // Create new Projek\Slim\Monolog::__construct() instance
-        $mock2 = $mock->newInstanceArgs($consArgs);
-        $handler = $mock2->getMonolog()->getHandlers();
+        $mock = (new ReflectionClass(Monolog::class))->newInstanceArgs([
+            $this->settings['basename'],
+            $this->settings['logger']
+        ]);
 
         // Expect instance of registered handler
+        $handler = $mock->getMonolog()->getHandlers();
         $this->assertCount(1, $handler);
         $this->assertInstanceOf(Handler\RotatingFileHandler::class, array_shift($handler));
 
-        // Expect value of settings[directory]
-        $mock3 = $mock->getProperty('settings');
-        $mock3->setAccessible(true);
-        $settings = $mock3->getValue($monolog);
-
-        $this->assertTrue(is_dir($settings['directory']));
-
         // Expect create new file in $settings['directory']
-        $mock4 = $mock2->log('DEBUG', 'coba');
-        $logfile = $settings['directory'].'/'.$this->settings['basename'].'-'.date('Y-m-d').'.log';
+        $mock->log('DEBUG', 'coba');
+        $logfile = $this->settings['logger']['directory'].'/'.$this->settings['basename'].'-'.date('Y-m-d').'.log';
         $logged = file_exists($logfile);
 
         $this->assertTrue($logged);
