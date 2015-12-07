@@ -26,7 +26,7 @@ class Monolog
         'directory' => null,
         'filename' => null,
         'timezone' => null,
-        'level' => 'DEBUG',
+        'level' => Logger::DEBUG,
         'handlers' => [],
     ];
 
@@ -60,7 +60,7 @@ class Monolog
 
         $levels = array_keys(Logger::getLevels());
         if (!in_array(strtoupper($this->settings['level']), $levels)) {
-            $this->settings['level'] = 'DEBUG';
+            $this->settings['level'] = Logger::DEBUG;
         }
 
         if ($path = $this->settings['directory']) {
