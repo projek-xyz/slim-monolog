@@ -35,14 +35,19 @@ $container->register(new \Projek\Slim\MonologProvider);
 // Option 2, using Closure
 $container['logger'] = function ($c) {
     $settings = [
-        'directory' => 'path/to/logs',  // Path to log directory
-        'filename' => 'my-app.log',     // Log file name
-        'timezone' => 'Asia/Jakarta',   // Your timezone
-        'level' => 'DEBUG',             // Log level
-        'handlers' => [],               // List of Monolog Handler you wanna use
+        // Path to log directory
+        'directory' => 'path/to/logs',
+        // Log file name
+        'filename' => 'my-app.log',
+        // Your timezone
+        'timezone' => 'Asia/Jakarta',
+        // Log level
+        'level' => 'debug',
+        // List of Monolog Handlers you wanna use
+        'handlers' => [],
     ];
 
-    return new \Projek\Slim\Monolog($settings);
+    return new \Projek\Slim\Monolog('slim-app', $settings);
 };
 
 // Define a log middleware
@@ -59,8 +64,9 @@ $app->run();
 ```
 
 **NOTE**:
-- if you are using _option 1_ please make sure you already have `$container['settings']['logger']` in your configuration file.
+- If you are using _option 1_ please make sure you already have `$container['settings']['logger']` in your configuration file.
 - `$settings['filename']` only required if you have `$settings['directory']`
+- Set `$settings['directory']` to `syslog` to use System Log.
 
 ## Testing
 
