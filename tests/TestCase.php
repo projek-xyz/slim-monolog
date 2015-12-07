@@ -21,7 +21,7 @@ abstract class TestCase extends PHPUnit_Framework_TestCase
         'basename' => 'slim-monolog-app',
         'logger' => [
             'directory' => '',
-            'filename' => 'app',
+            'filename' => 'app.log',
             'level' => '',
             'handlers' => [],
         ],

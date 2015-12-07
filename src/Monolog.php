@@ -10,29 +10,38 @@ class Monolog
 {
     use LoggerTrait;
 
-    private $name;
+    /**
+     * Logger name
+     *
+     * @var string
+     */
+    private $name = 'slim-app';
 
     /**
+     * Logger settings
+     *
      * @var array
      */
     private $settings = [
         'directory' => null,
         'filename' => null,
         'timezone' => null,
-        'level' => 'debug',
+        'level' => 'DEBUG',
         'handlers' => [],
     ];
 
     /**
+     * Monolog instance
+     *
      * @var \Monolog\Logger
      */
     private $monolog;
 
     /**
-     * Register this plates view provider with a Pimple container
+     * Class constructor
      *
-     * @param string $name
-     * @param array  $settings
+     * @param string $name     Logger name
+     * @param array  $settings Logger settings
      */
     public function __construct($name = 'slim-app', $settings = [])
     {
@@ -44,7 +53,6 @@ class Monolog
             if (is_string($this->settings['timezone'])) {
                 $this->settings['timezone'] = new \DateTimeZone($this->settings['timezone']);
             }
-
             Logger::setTimezone($this->settings['timezone']);
         }
 
@@ -52,15 +60,14 @@ class Monolog
 
         $levels = array_keys(Logger::getLevels());
         if (!in_array(strtoupper($this->settings['level']), $levels)) {
-            $this->settings['level'] = 'debug';
+            $this->settings['level'] = 'DEBUG';
         }
 
         if ($path = $this->settings['directory']) {
             if ($path === 'syslog') {
-                $this->useSyslog($this->name, $this->settings['level']);
+                $this->useSyslog($this->settings['level'], $this->name);
             } elseif (is_dir($path)) {
-                $path .= '/'.$this->name;
-                $this->useRotatingFiles($path, $this->settings['level']);
+                $this->useRotatingFiles($this->settings['level'], $this->name.'.log');
             }
         }
     }
@@ -133,11 +140,11 @@ class Monolog
     /**
      * Register a Syslog handler.
      *
-     * @param  string $name
      * @param  string $level
+     * @param  string $name
      * @return void
      */
-    public function useSyslog($name = 'slim-app', $level = 'debug')
+    public function useSyslog($level = Logger::DEBUG, $name = null)
     {
         $name or $name = $this->name;
         $this->monolog->pushHandler(new Handler\SyslogHandler($name, LOG_USER, $level));
@@ -152,9 +159,9 @@ class Monolog
      * @param  int    $messageType
      * @return void
      */
-    public function useErrorLog($level = 'debug', $messageType = Handler\ErrorLogHandler::OPERATING_SYSTEM)
+    public function useErrorLog($level = Logger::DEBUG, $messageType = Handler\ErrorLogHandler::OPERATING_SYSTEM)
     {
-        $handler = new Handler\ErrorLogHandler($messageType, Logger::toMonologLevel($level));
+        $handler = new Handler\ErrorLogHandler($messageType, $level);
         $this->monolog->pushHandler($handler);
         $handler->setFormatter($this->getDefaultFormatter());
 
@@ -164,15 +171,17 @@ class Monolog
     /**
      * Register a file log handler.
      *
-     * @param  string  $path
-     * @param  string  $level
+     * @param  string $level
+     * @param  string $filename
      * @return void
      */
-    public function useFiles($path = '', $level = 'debug')
+    public function useFiles($level = Logger::DEBUG, $filename = null)
     {
-        $path or $path = $this->settings['directory'];
-        $handler = new Handler\StreamHandler($path, Logger::toMonologLevel($level));
-        $this->monolog->pushHandler($handler);
+        $filename || $filename = $this->name.'.log';
+        $path = $this->settings['directory'].'/'.$filename;
+        $this->monolog->pushHandler(
+            $handler = new Handler\StreamHandler($path, $level)
+        );
         $handler->setFormatter($this->getDefaultFormatter());
 
         return $this;
@@ -181,15 +190,16 @@ class Monolog
     /**
      * Register a rotating file log handler.
      *
-     * @param  string  $level
-     * @param  string  $path
+     * @param  string $level
+     * @param  string $filename
      * @return void
      */
-    public function useRotatingFiles($level = 'debug', $path = null)
+    public function useRotatingFiles($level = Logger::DEBUG, $filename = null)
     {
-        $path || $path = $this->settings['directory'];
+        $filename || $filename = $this->name.'.log';
+        $path = $this->settings['directory'].'/'.$filename;
         $this->monolog->pushHandler(
-            $handler = new Handler\RotatingFileHandler($path, 5, Logger::toMonologLevel($level))
+            $handler = new Handler\RotatingFileHandler($path, 5, $level)
         );
         $handler->setFormatter($this->getDefaultFormatter());
 

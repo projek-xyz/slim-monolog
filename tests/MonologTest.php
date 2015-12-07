@@ -75,91 +75,131 @@ class MonologTest extends TestCase
         $this->assertInstanceOf(\DateTimeZone::class, $setting->getValue($monolog)['timezone']);
     }
 
-    public function testShouldUseSyslogBySettings()
+    public function testConstructorUsingSyslogHandler()
     {
-        $settings = ['directory' => 'syslog'];
+        $this->settings['logger']['directory'] = 'syslog';
+
+        // Mocking Projek\Slim\Monolog
         $monolog = $this->getMockBuilder(Monolog::class)
             ->disableOriginalConstructor()
             ->getMock();
 
+        // Mocking Monolog\Logger
         $logger = $this->getMockBuilder(Logger::class)
             ->setConstructorArgs([$this->settings['basename']])
             ->getMock();
 
+        // Expect method Projek\Slim\Monolog::useSyslog() will called once
         $monolog->expects($this->once())
             ->method('useSyslog')
             ->willReturn($logger);
 
+        // Invoke Projek\Slim\Monolog::__construct()
         $mock = new ReflectionClass(Monolog::class);
-        $cons = $mock->getConstructor();
-        $cons->invokeArgs($monolog, [$this->settings['basename'], $settings]);
+        $mock->getConstructor()->invokeArgs($monolog, [
+            $this->settings['basename'],
+            $this->settings['logger']
+        ]);
+
+        $mock->getMethod('useSyslog')->invoke($monolog);
+        $log = $mock->getMethod('getMonolog')->invoke($monolog);
+        $handler = $log->getHandlers();
+
+        $this->assertInstanceOf(Handler\SyslogHandler::class, array_shift($handler));
     }
 
-    public function testShouldUseRollingFileWhenDirExists()
+    public function testConstructorUsingRotatingFilesHandler()
     {
-        $settings = ['directory' => __DIR__.'/logs'];
+        // Mocking Projek\Slim\Monolog
         $monolog = $this->getMockBuilder(Monolog::class)
             ->disableOriginalConstructor()
             ->getMock();
 
+        // Mocking Monolog\Logger
         $logger = $this->getMockBuilder(Logger::class)
             ->setConstructorArgs([$this->settings['basename']])
             ->getMock();
 
+        // Expect method Projek\Slim\Monolog::useRotatingFiles() will called once
         $monolog->expects($this->once())
             ->method('useRotatingFiles')
             ->willReturn($logger);
 
         $mock = new ReflectionClass(Monolog::class);
-        $cons = $mock->getConstructor();
-        $cons->invokeArgs($monolog, [$this->settings['basename'], $settings]);
+        $consArgs = [
+            $this->settings['basename'],
+            $this->settings['logger']
+        ];
+
+        // Invoke Projek\Slim\Monolog::__construct()
+        $mock->getConstructor()->invokeArgs($monolog, $consArgs);
+
+        // Create new Projek\Slim\Monolog::__construct() instance
+        $mock2 = $mock->newInstanceArgs($consArgs);
+        $handler = $mock2->getMonolog()->getHandlers();
+
+        // Expect instance of registered handler
+        $this->assertCount(1, $handler);
+        $this->assertInstanceOf(Handler\RotatingFileHandler::class, array_shift($handler));
+
+        // Expect value of settings[directory]
+        $mock3 = $mock->getProperty('settings');
+        $mock3->setAccessible(true);
+        $settings = $mock3->getValue($monolog);
+
+        $this->assertTrue(is_dir($settings['directory']));
+
+        // Expect create new file in $settings['directory']
+        $mock4 = $mock2->log('DEBUG', 'coba');
+        $logfile = $settings['directory'].'/'.$this->settings['basename'].'-'.date('Y-m-d').'.log';
+        $logged = file_exists($logfile);
+
+        $this->assertTrue($logged);
+
+        if ($logged) {
+            unlink($logfile);
+        }
     }
 
-    public function testShouldUseSyslogWhenNeeded()
+    public function testUsingFilesHandler()
     {
-        extract($this->settings);
-        $logger = new Monolog($basename, $logger);
+        $logger = new Monolog(
+            $this->settings['basename'],
+            $this->settings['logger']
+        );
+
+        $logger->popHandler();
         $logger->useFiles();
         $handler = $logger->getMonolog()->getHandlers();
 
+        // Expect instance of registered handler
         $this->assertInstanceOf(Handler\StreamHandler::class, array_shift($handler));
+
+        // Expect create new file in $settings['directory']
+        $logger->log('DEBUG', 'coba');
+        $logfile = $this->settings['logger']['directory'].'/'.$this->settings['basename'].'.log';
+        $logged = file_exists($logfile);
+
+        $this->assertTrue($logged);
+
+        if ($logged) {
+            unlink($logfile);
+        }
     }
 
-    public function testShouldUseFilesWhenNeeded()
+    public function testUsingErrorlogHandler()
     {
-        extract($this->settings);
-        $logger = new Monolog($basename, $logger);
-        $logger->useSyslog();
-        $handler = $logger->getMonolog()->getHandlers();
+        $logger = new Monolog(
+            $this->settings['basename'],
+            $this->settings['logger']
+        );
 
-        $this->assertInstanceOf(Handler\SyslogHandler::class, array_shift($handler));
-    }
-
-    public function testShouldUseErrorlogWhenNeeded()
-    {
-        extract($this->settings);
-        $logger = new Monolog($basename, $logger);
+        $logger->popHandler();
         $logger->useErrorLog();
         $handler = $logger->getMonolog()->getHandlers();
 
+        // Expect instance of registered handler
         $this->assertInstanceOf(Handler\ErrorLogHandler::class, array_shift($handler));
-    }
-
-    public function testShouldWriteLog()
-    {
-        extract($this->settings);
-        $handle = fopen('php://memory', 'a+');
-        $logger = new Monolog($basename, $logger);
-        $logger->pushHandler(new Handler\StreamHandler($handle));
-        $logger->debug('test');
-        fseek($handle, 0);
-        $out = explode('.', fread($handle, 100));
-
-        $this->assertEquals('DEBUG: test [] []'.PHP_EOL, $out[1]);
-
-        if (file_exists($file = 'debug-'.date('Y-m-d'))) {
-            unlink($file);
-        }
     }
 
     public function testFormaterInstance()
