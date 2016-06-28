@@ -10,7 +10,7 @@ class MonologProvider implements ServiceProviderInterface
     /**
      * Register this monolog provider with a Pimple container
      *
-     * @param Container $container
+     * @param \Pimple\Container $container
      */
     public function register(Container $container)
     {

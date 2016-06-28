@@ -140,9 +140,9 @@ class Monolog
     /**
      * Register a Syslog handler.
      *
-     * @param  string $level
-     * @param  string $name
-     * @return void
+     * @param  mixed       $level
+     * @param  null|string $name
+     * @return \Projek\Slim\Monolog
      */
     public function useSyslog($level = Logger::DEBUG, $name = null)
     {
@@ -155,9 +155,9 @@ class Monolog
     /**
      * Register an error_log handler.
      *
-     * @param  string $level
-     * @param  int    $messageType
-     * @return void
+     * @param  mixed $level
+     * @param  mixed $messageType
+     * @return \Projek\Slim\Monolog
      */
     public function useErrorLog($level = Logger::DEBUG, $messageType = Handler\ErrorLogHandler::OPERATING_SYSTEM)
     {
@@ -171,9 +171,9 @@ class Monolog
     /**
      * Register a file log handler.
      *
-     * @param  string $level
-     * @param  string $filename
-     * @return void
+     * @param  mixed       $level
+     * @param  null|string $filename
+     * @return \Projek\Slim\Monolog
      */
     public function useFiles($level = Logger::DEBUG, $filename = null)
     {
@@ -190,9 +190,9 @@ class Monolog
     /**
      * Register a rotating file log handler.
      *
-     * @param  string $level
-     * @param  string $filename
-     * @return void
+     * @param  mixed       $level
+     * @param  null|string $filename
+     * @return \Projek\Slim\Monolog
      */
     public function useRotatingFiles($level = Logger::DEBUG, $filename = null)
     {
