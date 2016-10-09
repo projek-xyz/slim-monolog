@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <phpunit
-    bootstrap="vendor/autoload.php"
+    bootstrap="../vendor/autoload.php"
     backupGlobals="false"
     backupStaticAttributes="false"
     convertWarningsToExceptions="true"
@@ -15,14 +15,14 @@
     colors="true">
 
     <testsuites>
-        <testsuite name="Slim Monolog Test Suite">
-            <directory>./tests/</directory>
+        <testsuite name="Slim Plates View Test Suite">
+            <directory>.</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory>./src</directory>
+            <directory>../src</directory>
         </whitelist>
     </filter>
 
