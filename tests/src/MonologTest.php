@@ -23,19 +23,21 @@ class MonologTest extends TestCase
 
     public function testShoudPushHandler()
     {
-        $path = $this->settings['logger']['directory'];
-        $monolog = $this->logger->pushHandler(
-            new Handler\StreamHandler($path, Logger::toMonologLevel('debug'))
-        );
+        $monolog = $this->logger->pushHandler(new Handler\StreamHandler(
+            $this->settings['logger']['directory'],
+            Logger::toMonologLevel('debug')
+        ));
+
         $this->assertCount(2, $monolog->getHandlers());
     }
 
     public function testShoudPopHandler()
     {
-        $path = $this->settings['logger']['directory'];
-        $monolog = $this->logger->pushHandler(
-            new Handler\StreamHandler($path, Logger::toMonologLevel('debug'))
-        );
+        $monolog = $this->logger->pushHandler(new Handler\StreamHandler(
+            $this->settings['logger']['directory'],
+            Logger::toMonologLevel('debug')
+        ));
+
         $this->logger->popHandler();
 
         $this->assertCount(1, $monolog->getHandlers());
@@ -46,6 +48,7 @@ class MonologTest extends TestCase
         $monolog = $this->logger->pushProcessor(function (array $record) {
             return $record;
         });
+
         $this->assertCount(1, $monolog->getProcessors());
     }
 
@@ -54,6 +57,7 @@ class MonologTest extends TestCase
         $monolog = $this->logger->pushProcessor(function (array $record) {
             return $record;
         });
+
         $this->logger->popProcessor();
 
         $this->assertCount(0, $monolog->getProcessors());

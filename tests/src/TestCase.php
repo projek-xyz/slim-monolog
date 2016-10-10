@@ -29,7 +29,7 @@ abstract class TestCase extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->settings['logger']['directory'] = __DIR__.'/logs';
+        $this->settings['logger']['directory'] = dirname(__DIR__).'/fixtures';
         $this->logger = new Monolog($this->settings['basename'], $this->settings['logger']);
     }
 }
