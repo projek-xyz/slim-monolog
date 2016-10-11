@@ -1,7 +1,7 @@
 # Slim Framework 3.x Monolog Logger
+[![VERSION](https://img.shields.io/packagist/v/projek-xyz/slim-monolog.svg?style=flat-square)](https://github.com/projek-xyz/slim-monolog/releases)
 
 [![LICENSE](https://img.shields.io/packagist/l/projek-xyz/slim-monolog.svg?style=flat-square)](LICENSE.md)
-[![VERSION](https://img.shields.io/packagist/v/projek-xyz/slim-monolog.svg?style=flat-square)](https://github.com/projek-xyz/slim-monolog/releases)
 [![Build Status](https://img.shields.io/travis/projek-xyz/slim-monolog/master.svg?branch=master&style=flat-square)](https://travis-ci.org/projek-xyz/slim-monolog)
 [![Coveralls](https://img.shields.io/coveralls/projek-xyz/slim-monolog/master.svg?style=flat-square)](https://coveralls.io/github/projek-xyz/slim-monolog)
 [![Code Climate](https://img.shields.io/codeclimate/github/projek-xyz/slim-monolog.svg?style=flat-square)](https://codeclimate.com/github/projek-xyz/slim-monolog)
@@ -68,21 +68,9 @@ $app->run();
 - `$settings['filename']` only required if you have `$settings['directory']`
 - Set `$settings['directory']` to `syslog` to use System Log.
 
-## Testing
-
-```bash
-$ phpunit
-```
-
 ## Contributing
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details.
-
-## Credits
-
-- [Fery Wardiyanto](http://feryardiant.me)
-- [Slim Framework](http://www.slimframework.com)
-- [Monolog](https://github.com/Seldaek/monolog)
+Please see [CONTRIBUTING](.github/CONTRIBUTING.md) and [CONDUCT](.github/CONDUCT.md) for details.
 
 ## License
 
