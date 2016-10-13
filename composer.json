@@ -1,6 +1,6 @@
 {
     "name": "projek-xyz/slim-monolog",
-    "description": "Slim micro framework 3 log helper built on top of the Monolog logger component",
+    "description": "Write log file on your Slim 3 application with Monolog logger.",
     "keywords": ["slim", "microframework", "framework", "logger", "monolog", "library"],
     "homepage": "http://www.projek.xyz/slim-monolog",
     "type": "library",
