@@ -1,4 +1,4 @@
-# # Monolog Logger Integration for Slim micro framework 3
+# Monolog Logger Integration for Slim micro framework 3
 
 [![LICENSE](https://img.shields.io/packagist/l/projek-xyz/slim-monolog.svg?style=flat-square)](LICENSE.md)
 [![VERSION](https://img.shields.io/packagist/v/projek-xyz/slim-monolog.svg?style=flat-square)](https://github.com/projek-xyz/slim-monolog/releases)
