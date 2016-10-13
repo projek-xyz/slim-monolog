@@ -8,7 +8,7 @@
 [![Code Climate](https://img.shields.io/codeclimate/github/projek-xyz/slim-monolog.svg?style=flat-square)](https://codeclimate.com/github/projek-xyz/slim-monolog)
 [![SensioLabs Insight](https://img.shields.io/sensiolabs/i/26316c51-2637-473f-81bb-17af361f4b65.svg?style=flat-square)](https://insight.sensiolabs.com/projects/26316c51-2637-473f-81bb-17af361f4b65)
 
-Write log file on your Slim 3 application with Monolog logger.
+Write log file on your Slim 3 application with Monolog logger.
 
 ## Install
 
@@ -75,4 +75,4 @@ Please see [CONTRIBUTING](.github/CONTRIBUTING.md) and [CONDUCT](.github/CONDUCT
 
 ## License
 
-This library is open-sourced software licensed under [MIT license](LICENSE.md).
+This library is open-sourced software licensed under [MIT license](LICENSE.md).
